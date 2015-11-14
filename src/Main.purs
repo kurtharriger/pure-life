@@ -33,7 +33,7 @@ counter = createClass $ spec 5 \ctx -> do
                , D.text " Click me to increment!"
                ]
 
-board = createClass $ spec [["dead", "alive", "dead"], ["dead", "alive", "dead"], ["dead", "alive", "dead"]] renderBoard
+board = createClass $ spec [[0, 1, 0], [0, 1, 0], [0, 1, 0]] renderBoard
 
 renderText context = do
   val <- readState context
@@ -46,7 +46,11 @@ renderBoard context = do
 renderCell cell = do
   D.div [] $ makeCell <$> cell
 
-makeCell val = D.div [P.className $ "cell " ++ val] []
+cellStateName val = if val == 1 then "alive" else "dead"
+
+makeCell val = D.div [
+  P.className $ "cell " ++ cellStateName val ]
+  []
 
 main = container >>= render ui
   where
