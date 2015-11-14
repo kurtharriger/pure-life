@@ -24,7 +24,7 @@ incrementCounter ctx e = do
   val <- readState ctx
   writeState ctx (val + 1)
 
-counter = createClass $ spec 0 \ctx -> do
+counter = createClass $ spec 5 \ctx -> do
   val <- readState ctx
   return $ D.p [ P.className "Counter"
                , P.onClick (incrementCounter ctx)
@@ -33,10 +33,23 @@ counter = createClass $ spec 0 \ctx -> do
                , D.text " Click me to increment!"
                ]
 
+board = createClass $ spec ["alive", "dead"] renderCell
+
+renderText context = do
+  val <- readState context
+  return $ D.p [] $ map D.text val
+
+renderCell context = do
+  val <- readState context
+  return $ D.p [] $ map makeCell val
+
+makeCell val = D.div [P.className val] []
+
 main = container >>= render ui
   where
   ui :: ReactElement
-  ui = D.div [] [ createFactory counter {} ]
+  ui = D.div [] [ createFactory board {},
+                  createFactory counter {} ]
 
   container :: forall eff. Eff (dom :: DOM | eff) Element
   container = do
