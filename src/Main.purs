@@ -33,29 +33,26 @@ counter = createClass $ spec 5 \ctx -> do
                , D.text " Click me to increment!"
                ]
 
-board = createClass $ spec [[0, 1, 0], [0, 1, 0], [0, 1, 0]] renderBoard
 
-renderText context = do
-  val <- readState context
-  return $ D.p [] $ D.text <$> val
+board = createClass $ spec unit renderBoard
 
-renderBoard context = do
-  val <- readState context
-  return $ D.div [] $ renderCell <$> val
+renderBoard ctx = do
+  props <- getProps ctx
+  return $ D.div [] ((map renderCell) props.board)
 
 renderCell cell = do
   D.div [] $ makeCell <$> cell
 
 cellStateName val = if val == 1 then "alive" else "dead"
 
-makeCell val = D.div [
-  P.className $ "cell " ++ cellStateName val ]
-  []
+makeCell val = D.div [P.className $ "cell " ++ cellStateName val] []
+
+gameState = {board: [[0, 1, 0], [0, 1, 0], [0, 1, 0]]}
 
 main = container >>= render ui
   where
   ui :: ReactElement
-  ui = D.div [] [ createFactory board {},
+  ui = D.div [] [ createFactory board gameState,
                   createFactory counter {} ]
 
   container :: forall eff. Eff (dom :: DOM | eff) Element
