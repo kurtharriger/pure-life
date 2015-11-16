@@ -16,9 +16,10 @@ import DOM.HTML.Window (document)
 import DOM.Node.Types (Element())
 
 import React
-
 import qualified React.DOM as D
 import qualified React.DOM.Props as P
+
+import Life
 
 incrementCounter ctx e = do
   val <- readState ctx
@@ -43,11 +44,13 @@ renderBoard ctx = do
 renderCell cell = do
   D.div [] $ makeCell <$> cell
 
-cellStateName val = if val == 1 then "alive" else "dead"
+className :: Cell -> String
+className Alive = "cell alive"
+className Dead = "cell dead"
 
-makeCell val = D.div [P.className $ "cell " ++ cellStateName val] []
+makeCell val = D.div [P.className (className val)] []
 
-gameState = {board: [[0, 1, 0], [0, 1, 0], [0, 1, 0]]}
+gameState = {board: Life.nextGeneration Life.testBoard}
 
 main = container >>= render ui
   where

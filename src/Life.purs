@@ -10,10 +10,6 @@ import Data.Foldable
 
 data Cell = Alive | Dead
 
-className :: Cell -> String
-className Alive = "cell alive"
-className Dead = "cell dead"
-
 instance showCell :: Show Cell where
   show Alive = "Alive"
   show Dead = "Dead"
